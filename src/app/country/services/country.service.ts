@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { map, Observable, catchError, throwError } from 'rxjs';
 
 import type { Country } from '../interfaces/country.interface';
 import { RESTCountry } from '../interfaces/rest-countries.interfaces';
@@ -20,7 +20,15 @@ export class CountryService {
     query = query.toLowerCase();
 
     return this.http.get<RESTCountry[]>(`${API_URL}/capital/${ query }`)
-      .pipe(map((response)=>CountryMapper.mapRestCountryArrayToCountryArray(response)));
+      .pipe(map((response) => CountryMapper.mapRestCountryArrayToCountryArray(response)),
+        catchError((error) => {
+          // console.log('Error fetching ', error);
+
+          return throwError(
+            () => new Error(`No se encontro un país con la capital: ${query}`)
+          );
+        })
+    );
   }
 
 }

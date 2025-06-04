@@ -1,6 +1,10 @@
-import { Component } from '@angular/core';
-import { SearchInputComponent } from "../../components/search-input/search-input.component";
+import { Component, inject, signal } from '@angular/core';
+import { of } from 'rxjs';
+import { rxResource } from '@angular/core/rxjs-interop';
+
 import { CountryListComponent } from "../../components/country-list/country-list.component";
+import { CountryService } from '../../services/country.service';
+import { SearchInputComponent } from "../../components/search-input/search-input.component";
 
 @Component({
   standalone: true,
@@ -8,4 +12,18 @@ import { CountryListComponent } from "../../components/country-list/country-list
   imports: [SearchInputComponent, CountryListComponent],
   templateUrl: './by-country-page.component.html',
 })
-export class ByCountryPageComponent { }
+export class ByCountryPageComponent {
+
+  countryService = inject(CountryService);
+  query = signal('');
+
+  countryResource = rxResource({
+    request: () => ({ query: this.query() }),
+    loader: ({ request }) => {
+      if ( !request.query ) return of([]);
+
+      return this.countryService.searchByCountry(request.query)
+
+    }
+  });
+}

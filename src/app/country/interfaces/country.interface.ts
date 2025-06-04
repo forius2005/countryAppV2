@@ -7,5 +7,7 @@ export interface Country {
   flagSvg: string;
   capital: string;
   population: number;
+  region: string;
+  subregion: string;
 
 }

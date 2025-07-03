@@ -3,11 +3,11 @@
 
   <input
     type="text"
-    class="input input-bordered mr-2 w-56"
+    class="w-56 mr-2 input input-bordered"
     [placeholder]="placeholder()"
     autofocus
     #txtSearch
-    (keyup.enter)="value.emit(txtSearch.value)"
+    (keyup)="inputValue.set(txtSearch.value)"
   />
 
   <button
